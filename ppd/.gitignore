@@ -1,0 +1,10 @@
+cmake-build-debug/
+
+.idea
+
+
+outFiles
+files
+testFiles
+okFiles
+/CMakeFiles/
