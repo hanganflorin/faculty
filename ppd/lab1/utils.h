@@ -5,6 +5,6 @@
 #ifndef LAB1_UTILS_H
 #define LAB1_UTILS_H
 
-int generateRange(int x, int y);
+int generateNumber(int x, int y);
 
 #endif //LAB1_UTILS_H

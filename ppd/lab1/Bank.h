@@ -15,16 +15,16 @@ class Bank {
 private:
     std::vector<Account> accounts;
     std::vector<std::thread> threads;
-    const int NumberAccounts = 100;
-    const int NumberThreads = 200;
-    const int TransactionsPerThread = 100;
+    const int NumberAccounts;
+    const int NumberThreads;
+    const int TransactionsPerThread;
 public:
 
     Bank(int, int, int);
     void run();
-    void checkCorrupted();
-    void Executor(int);
-    void makeTransaction(Transaction);
+    void CheckCorrupted();
+    void Executor();
+    void MakeTransaction(Transaction);
 };
 
 #endif //LAB1_BANK_H

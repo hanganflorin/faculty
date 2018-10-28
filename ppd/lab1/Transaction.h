@@ -17,8 +17,6 @@ public:
     int getFrom() const;
     int getTo() const;
     int getAmount() const;
-    const int getId() const;
-    static int getAuto_id();
 };
 
 #endif //LAB1_TRANSACTION_H

@@ -19,11 +19,3 @@ int Transaction::getTo() const {
 int Transaction::getAmount() const {
     return amount;
 }
-
-const int Transaction::getId() const {
-    return id;
-
-}
-int Transaction::getAuto_id() {
-    return auto_id;
-}

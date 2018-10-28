@@ -14,20 +14,16 @@ private:
     int id;
     long long balance;
     const long long initialBalance;
-    std::vector <Transaction> Transactions;
+    std::vector <Transaction> sentTransactions;
     std::vector <Transaction> receiveTransactions;
     std::mutex* account_mutex;
 
 public:
     explicit Account(int _balance = 0, int _id = 0);
-    void recordSend(Transaction);
-    void recordReceive(Transaction);
+    void RecordSend(Transaction);
+    void RecordReceive(Transaction);
 
-    bool corrupted();
-    const std::vector<Transaction> &getTransactions() const;
-    const std::vector<Transaction> &getReceiveTransactions() const;
-    const long long int getInitialBalance() const;
-    long long getBalance() const;
+    bool IsCorrupted();
 };
 
 
