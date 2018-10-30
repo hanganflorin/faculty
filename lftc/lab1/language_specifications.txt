@@ -1,0 +1,60 @@
+Minilanguage specification
+
+
+Language Definition:
+Alphabet:
+a. Upper (A-Z) and lower case letters (a-z) of the English alphabet
+b. Underline character '_';
+ c. Decimal digits (0-9);
+ Lexic:
+	a.Special symbols, representing:
+		- operators + - *  / % = == != <= < >= >
+		- separators ( )  { }  : ; space
+		- reserved words: main int char float struct cin cout if else while return
+	b.identifiers
+	 	 -a sequence of letters and  digits, such that the first character is a letter;
+    c.constants
+	 	- can be integers or characters
+
+
+Lexical rules:
+
+<ID> ::= <letter> | <letter><symbol_list>
+<symbol_list> ::= < symbol > | < symbol >< symbol_list >
+<symbol> ::= <letter> | <digit> | “_”
+<letter> ::= “a” | “b” | … | “z” | “A” | … | “Z”
+<digit> ::= “0” | <non_zero_digit>
+<non_zero_digit> ::= “1” | … | “9”
+<char> ::= “’”<symbol>”’”
+<string> ::= “"”<symbol_list>”"”
+<CONST> ::= <integer> | <string> | <char>
+<integer> ::= “+”<number> | “-”<number> | <number> | “0”
+<number> ::= <non_zero_digit> | < non_zero_digit ><number>
+<float> ::= <integer> | <integer> ”.” <digit_list>
+<digit_list> ::= <digit> | <digit><digit_list>
+
+
+
+Syntactical rules:
+
+<program> ::= <data_type>”main()”<compound_stmt>
+<data_type> ::=  “int” | “char” | “float”
+<compound_stmt> ::= “{” <stmt_list> ”}”
+<stmt_list> ::= <stmt> | <stmt><stmt_list>
+<stmt> ::= <decl> | <assign> | <iostmt> | < cond_stmt > | <loop> | <return>
+<decl> ::= <type> <ID>”;”
+<type> ::= <data_type> | “struct” <ID>
+<struct_decl> ::= “struct” <ID> “{” <data_type_decl_list> “}” “;”
+< data_type_decl_list > ::= <data_type_decl> | < data_type_decl >< data_type_decl_list >
+<data_type_decl> ::= <data_type> <ID> “;”
+<assign> ::= <ID> “=” <expr> “;”
+<expr> ::= <ID> | <CONST> | <expr> <op> <expr>
+<op> ::= “ + ” | “ - ” | “*” | “/” | “%”
+<iostmt> ::= <cin_stmt> | <cout_stmt>
+<cin_stmt> ::= “cin” <ID> “;”
+<cout_stmt> ::= “cout” <ID> “;”
+<cond_stmt> ::= “if” “(” <conditon> “)”<compound_stmt>   | “if” “(” <conditon> “)”<compound_stmt>  “else” <compound_stmt>
+ <condition> ::= <expr> <rel_op> <expr>
+<rel_op> ::= “==” | “!=” | “<” | “>” | “<=” | “>=”
+<loop> ::= “while” “(” <condition> “)” <compound_stmt>
+<return> ::= “return” <expr> “;”
