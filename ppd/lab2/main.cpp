@@ -5,20 +5,18 @@
 
 int main() {
     std::cout << "Reading M1...\n";
-    Matrix matrix1("M10000_1.txt");
+    Matrix matrix1("M1000_1.txt");
     std::cout << "Reading M2...\n";
-    Matrix matrix2("M10000_2.txt");
-//    int N = 10000;
-//    Matrix matrix1(N, N);
-//    Matrix matrix2(N, N);
-//    matrix1.Randomize(1000, 10000);
-//    matrix2.Randomize(1000, 10000);
-//    matrix1.PrintToFile("M10000_1.txt");
-//    matrix1.PrintToFile("M10000_2.txt");
-    //matrix2.Print();
+    Matrix matrix2("M1000_2.txt");
+
+//    std::cout << "Reading M1...\n";
+//    Matrix matrix1("matrix1.in");
+//    std::cout << "Reading M2...\n";
+//    Matrix matrix2("matrix2.in");
+
     std::cout << "Start computing...\n";
     auto start = std::chrono::high_resolution_clock::now();
-    Matrix res = matrix1 + matrix2;
+    Matrix res = matrix1 * matrix2;
     auto finish = std::chrono::high_resolution_clock::now();
 
     //res.Print();

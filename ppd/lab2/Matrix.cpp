@@ -9,12 +9,14 @@
 #include "Matrix.h"
 #include "utils.h"
 #include <queue>
+#include <thread>
 
-const int Threads = 200;
-const int gap = 10000;
+//#define USE_SIMPLE
+#define USE_THREADS
 
-std::mutex queue_mutex;
+const int SIZE = 250; //size of the block to be calculated
 
+std::vector<std::thread> threads;
 
 Matrix::Matrix() : N(0), M(0) {
 
@@ -81,129 +83,6 @@ long long Matrix::getData(int i, int j) const {
     return this->data[i][j];
 }
 
-//
-//
-//void Matrix::SumExecutor(const Matrix* initial, const Matrix* other, Matrix* result, std::queue<int> *Q) {
-//    try {
-//        while (true) {
-//            queue_mutex.lock();
-//            if (Q->empty()){
-//                queue_mutex.unlock();
-//                break;
-//            }
-//            int x = Q->front();
-//            Q->pop();
-//            queue_mutex.unlock();
-//            int j = x % gap;
-//            int i = x / gap;
-//            makeSum(i, j, initial, other, result);
-//        }
-//    } catch (...) {
-//        return;
-//    }
-//}
-//
-//
-//void Matrix::ProdExecutor(const Matrix* initial, const Matrix* other, Matrix* result, std::queue<int> *Q) {
-//    try {
-//        while (true) {
-//            queue_mutex.lock();
-//            if (Q->empty()){
-//                queue_mutex.unlock();
-//                break;
-//            }
-//            int x = Q->front();
-//            Q->pop();
-//            queue_mutex.unlock();
-//            int j = x % gap;
-//            int i = x / gap;
-//            makeProd(i, j, initial, other, result);
-//        }
-//    } catch (...) {
-//        return;
-//    }
-//}
-//
-//
-Matrix Matrix::operator+(const Matrix &other) {
-    if (other.getN() != this->N || other.getM() != this->M)
-        throw "Incompatible";
-    Matrix result(this->N, this->M);
-
-//#ifdef USE_QUEUE
-//    std::queue<int> Q;
-//    for (int i = 0; i < N; ++i)
-//        for (int j = 0; j < M; ++j)
-//            Q.push(i * gap + j);
-//
-//    boost::thread_group threads;
-//    for (int i = 0; i < Threads; ++i)
-//        threads.create_thread(boost::bind(Matrix::SumExecutor, this, &other, &result, &Q));
-//    threads.join_all();
-//    return result;
-//#endif
-    // this works correctly
-    for (int i = 0; i < N; ++i)
-        for (int j = 0; j < M; ++j)
-            result.setData(i, j, this->data[i][j] + other.getData(i, j));
-    return result;
-}
-//
-//
-//Matrix Matrix::operator*(const Matrix &other) {
-//    /*
-//     * A(N, M)
-//     * B(M, P)
-//     *   =>
-//     * C(N, P)
-//     */
-//    const int &N = this->N;
-//    const int &M = this->M;
-//    const int &P = other.getM();
-//    if (M != other.getN())
-//        throw "Incompatible";
-//    Matrix result(N, P);
-//#ifdef USE_THREAD_POOL
-//    boost::asio::io_service ioService;
-//    boost::thread_group threadPool;
-//
-//    boost::asio::io_service::work work(ioService);
-//    for (int i = 0; i < 200; ++i) {
-//        threadPool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));
-//    }
-//
-//    for (int i = 0; i < N; ++i)
-//        for (int j = 0; j < M; ++j) {
-//            ioService.post(boost::bind(Matrix::makeProd, i, j, this, &other, &result));
-//        }
-//    ioService.poll();
-//    ioService.stop();
-//    threadPool.join_all();
-//#endif
-//#ifdef USE_QUEUE
-//    std::queue<int> Q;
-//    for (int i = 0; i < N; ++i)
-//        for (int j = 0; j < M; ++j)
-//            Q.push(i * gap + j);
-//
-//    boost::thread_group threads;
-//    for (int i = 0; i < Threads; ++i)
-//        threads.create_thread(boost::bind(Matrix::ProdExecutor, this, &other, &result, &Q));
-//    threads.join_all();
-//    return result;
-//#endif
-//    // this works correctly
-//    for (int i = 0; i < N; ++i)
-//        for (int j = 0; j < P; ++j) {
-//            long long accumulated = 0;
-//            for (int k = 0; k < M; ++k)
-//                accumulated += (this->data[i][k] * other.getData(k, j));
-//            result.setData(i, j, accumulated);
-//        }
-//    return result;
-//}
-//
-//
 void Matrix::Randomize(int left, int right) {
     for (auto &i : this->data) {
         for (auto &j : i) {
@@ -211,15 +90,93 @@ void Matrix::Randomize(int left, int right) {
         }
     }
 }
-//
-//void Matrix::makeSum(int i, int j, const Matrix* initial, const Matrix *other, Matrix *result) {
-//    result->setData(i, j, initial->getData(i, j) + other->getData(i, j));
-//}
-//
-//void Matrix::makeProd(int i, int j, const Matrix* initial, const Matrix *other, Matrix *result) {
-//    long long accumulated = 0;
-//    int M = initial->getM();
-//    for (int k = 0; k < M; ++k)
-//        accumulated += (initial->data[i][k] * other->getData(k, j));
-//    result->setData(i, j, accumulated);
-//}
+
+Matrix Matrix::operator+(const Matrix &other) {
+    if (other.getN() != this->N || other.getM() != this->M)
+        throw "Incompatible";
+    Matrix result(this->N, this->M);
+
+#ifdef USE_SIMPLE
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < M; ++j)
+            result.setData(i, j, this->data[i][j] + other.getData(i, j));
+    return result;
+#endif
+#ifdef USE_THREADS
+    int nr_threads = 0;
+    for(int i = 0; i < this->N; i += SIZE)
+        for ( int j = 0; j < this->M; j += SIZE )
+        {
+            nr_threads++;
+            threads.emplace_back(&Matrix::SumExecutor, i, j, SIZE, this, &other, &result);
+            for (auto& i : threads)
+                i.join();
+            threads.clear();
+        }
+    std::cout << nr_threads << " threads used\n";
+    return result;
+#endif
+}
+
+//solve for the block [i, i+size], [j, j+size]
+void Matrix::SumExecutor(int i, int j, int size, const Matrix* m1, const Matrix* m2, Matrix* result) {
+    for (int p1 = i; p1 <= i+size && p1 < m1->N; p1++ )
+        for( int p2 = j; p2 <= j+size && p2 < m1->M; ++p2 )
+            MakeSum(p1, p2, m1, m2, result);
+}
+
+void Matrix::MakeSum(int i, int j, const Matrix* m1, const Matrix *m2, Matrix *result) {
+    result->setData(i, j, m1->getData(i, j) + m2->getData(i, j));
+}
+
+Matrix Matrix::operator*(const Matrix &other) {
+    /*
+   * A(N, M)
+   * B(M, P)
+   *   =>
+   * C(N, P)
+   */
+    const int &N = this->N;
+    const int &M = this->M;
+    const int &P = other.getM();
+    if (M != other.getN())
+        throw "Incompatible";
+    Matrix result(N, P);
+
+#ifdef USE_SIMPLE
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < M; ++j)
+            Matrix::MakeProd(i, j, this, &other, &result);
+    return result;
+#endif
+#ifdef USE_THREADS
+    int nr_threads = 0;
+    for(int i = 0; i < this->N; i += SIZE)
+        for ( int j = 0; j < this->M; j += SIZE )
+        {
+            nr_threads++;
+            threads.emplace_back(&Matrix::ProdExecutor, i, j, SIZE, this, &other, &result);
+            for (auto& i : threads)
+                i.join();
+            threads.clear();
+        }
+    std::cout << nr_threads << " threads used\n";
+    return result;
+#endif
+}
+
+void Matrix::ProdExecutor(int i, int j, int size, const Matrix* m1, const Matrix* m2, Matrix* result)
+{
+    for (int p1 = i; p1 <= i+size && p1 < m1->N; p1++ )
+        for( int p2 = j; p2 <= j+size && p2 < m1->M; ++p2 )
+            MakeProd(p1, p2, m1, m2, result);
+}
+
+void Matrix::MakeProd(int i, int j, const Matrix* m1, const Matrix *m2, Matrix *result)
+{
+    long long accumulated = 0;
+    int M = m1->getM();
+    for (int k = 0; k < M; ++k)
+        accumulated += (m1->data[i][k] * m2->getData(k, j));
+    result->setData(i, j, accumulated);
+}

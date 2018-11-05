@@ -35,17 +35,16 @@ public:
 
     long long getData(int, int) const;
 
-    Matrix operator+(const Matrix &);
-//
-//    Matrix operator*(const Matrix &);
-//
     void Randomize(int, int); //random data
-//
-//    static void makeSum(int, int, const Matrix*, const Matrix*, Matrix*);
-//    static void makeProd(int, int, const Matrix*, const Matrix*, Matrix*);
-//
-//    static void SumExecutor(const Matrix* initial, const Matrix* other, Matrix* result, std::queue<int> *Q);
-//    static void ProdExecutor(const Matrix* initial, const Matrix* other, Matrix* result, std::queue<int> *Q);
+
+    Matrix operator+(const Matrix &);
+    static void SumExecutor(int i, int j, int size, const Matrix* m1, const Matrix* m2, Matrix* result);
+    static void MakeSum(int i, int j, const Matrix* m1, const Matrix *m2, Matrix *result);
+
+    Matrix operator*(const Matrix &);
+    static void ProdExecutor(int i, int j, int size, const Matrix* m1, const Matrix* m2, Matrix* result);
+    static void MakeProd(int i, int j, const Matrix* m1, const Matrix *m2, Matrix *result);
+
 };
 
 #endif //LAB2_MATRIX_H

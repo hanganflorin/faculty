@@ -1,0 +1,15 @@
+Operation    Operation  MatrixSize  NrThreads  BlockSize  Time
+USE_SIMPLE   +          6x6         -          -          2.953e-06
+USE_THREADS  +          6x6         9          2          0.00046712
+
+USE_SIMPLE   +          1000x1000   -          -          0.0197155
+USE_THREADS  +          1000x1000   250000     2          5.38387
+USE_THREADS  +          1000x1000   100        100        0.0267633
+USE_THREADS  +          1000x1000   4          500        0.0249114
+
+
+USE_SIMPLE   *          5x5         -          -          4e-06
+USE_SIMPLE   *          1000x1000   -          -          16.124
+USE_THREADS  *          1000x1000   4          500        13.6035
+USE_THREADS  *          1000x1000   100        100        10.6071
+USE_THREADS  *          1000x1000   16         250        10.067
