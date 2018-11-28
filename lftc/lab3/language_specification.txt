@@ -1,0 +1,133 @@
+Language specification
+
+
+Language Definition:
+Alphabet:
+a. Upper (A-Z) and lower case letters (a-z) of the English alphabet
+b. Underline character '_';
+ c. Decimal digits (0-9);
+ Lexic:
+	a.Special symbols, representing:
+		- operators + - *  / % = == != <= < >= >
+		- separators ( )  { }  : ; space
+		- reserved words: main int char float struct cin cout if else while return
+	b.identifiers
+	 	 -a sequence of letters and  digits, such that the first character is a letter;
+     	c.constants
+	 	- can be integers or characters
+
+
+Lexical rules:
+
+<ID> ::= <letter> | <letter><symbol_list>
+<symbol_list> ::= <symbol> | <symbol><symbol_list>
+<symbol> ::= <letter> | <digit> | “_”
+<letter> ::= “a” | “b” | … | “z” | “A” | … | “Z”
+<digit> ::= “0” | <non_zero_digit>
+<non_zero_digit> ::= “1” | … | “9”
+<char> ::= “””<symbol>”””
+<string> ::= “””<symbol_list>“””
+<CONST> ::= <integer> | <string>
+<integer> ::= “+”<number> | “-”<number> | <number> | “0”
+<number> ::= <non_zero_digit> | < non_zero_digit ><number>
+<float> ::= <integer> | <interger> ”.” <digit_list>
+<digit_list> ::= <digit> | <digit><degit_list>
+
+
+
+Sintactical rules:
+
+<program> ::= <data_type>”main()”<compound_stmt>
+<data_type> ::=  “int” | “char” | “float” | “string”
+<compound_stmt> ::= “{” <stmt_list> ”}”
+<stmt_list> ::= <stmt> | <stmt><stmt_list>
+<stmt> ::= <decl> | <assign> | <iostmt> | < cond_stmt > | <loop> | <return>
+<decl> ::= <type> <ID>”;”
+<type> ::= <data_type> | “struct” <ID>
+<struct_decl> ::= “struct” <ID> “{” <data_type_decl_list> “}” “;”
+< data_type_decl_list > ::= <data_type_decl> | < data_type_decl >< data_type_decl_list >
+<data_type_decl> ::= <data_type> <ID> “;”
+<assign> ::= <ID> “=” <expr> “;”
+<expr> ::= <ID> | <CONST> | <expr> <op> <expr>
+<op> ::= “+” | “-” | “*” | “/” | “%”
+<iostmt> ::= <cin_stmt> | <cout_stmt>
+<cin_stmt> ::= “cin” <ID> “;”
+<cout_stmt> ::= “cout” <ID> “;”
+<cond_stmt> ::= “if” “(” <conditon> “)”<compound_stmt>   | “if” “(” <conditon> “)”<compound_stmt>  “else” <compound_stmt>
+<condition> ::= <expr> <rel_op> <expr>
+<rel_op> ::= “==” | “!=” | “<” | “>” | “<=” | “>=”
+<loop> ::= “while” “(” <condition> “)” <compound_stmt>
+<return> ::= “return” <expr> “;”
+
+
+
+Language Grammar
+
+G = (N, E, S, P)
+N = {
+    ID,
+    SYMBOL_LIST,
+    SYMBOL,
+    LETTER,
+    DIGIT,
+    NON_ZERO_DIGIT,
+    CHAR,
+    STRING,
+    CONST,
+    INTEGER,
+    NUMBER,
+    FLOAT,
+    DIGIT_LIST,
+    PROGRAM,
+    DATA_TYPE,
+    COMPOUND_STMT,
+    STMT_LIST,
+    STMT,
+    DECL,
+    TYPE,
+    STRUCT_DECL,
+    DATA_TYPE_DECL_LIST,
+    DATA_TYPE_DECL,
+    ASSIGN,
+    EXPR,
+    OP,
+    IOSTMT,
+    CIN_STMT,
+    COUT_STMT,
+    COND_STMT,
+    CONDITION,
+    REL_OP,
+    LOOP,
+    RETURN,
+}
+
+
+E = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31}
+
+
+S = PROGRAM
+
+
+P = {
+    PROGRAM -> DATA_TYPE 11 COMPOUND_STMT
+    DATA_TYPE -> 2 | 3 | 4 | 5
+    COMPOUND_STMT -> 15 STMT_LIST 16
+    STMT_LIST -> STMT | STMT STMT_LIST
+    STMT -> DECL | ASSIGN | IOSTMT |COND_STMT | LOOP | RETURN
+    DECL -> TYPE 0 14
+    TYPE ->DATA_TYPE | 31  0
+    STRUCT_DECL -> 31 0 12 DATA_TYPE_DECL_LIST 13 14
+    DATA_TYPE_DECL_LIST -> DATA_TYPE_DECL | DATA_TYPE_DECL DATA_TYPE_DECL_LIST
+    DATA_TYPE_DECL -> DATA_TYPE 0 14
+    ASSIGN -> 0 28 EXPR14
+    EXPR -> 0 | 1 |EXPR OP EXPR
+    OP -> 17 | 18 | 19 | 20 | 21
+    IOSTMT -> CIN_STMT | COUT_STMT
+    CIN_STMT -> 6 0 14
+    COUT_STMT -> 7 0 17
+    COND_STMT -> 8 15 CONDITION 16 COMPOUND_STMT | 8 15 CONDITION 16 COMPOUND_STMT 9 COMPOUND
+    CONDITION -> EXPR REL_OP EXPR
+    REL_OP -> 26 | 27 | 23 | 25 | 22 | 24
+    LOOP -> 10 15 CONDITION 16 COMPOUND_STMT
+    RETURN -> 30 EXPR 14
+}
