@@ -1,0 +1,10 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/florinhangan/Documents/faculty/arduino/pwm
+CMake Error at cmake/ArduinoToolchain.cmake:82 (message):
+  Could not find Arduino SDK (set ARDUINO_SDK_PATH)!
+Call Stack (most recent call first):
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.12/Modules/CMakeDetermineSystem.cmake:94 (include)
+  CMakeLists.txt:4 (project)
+
+
+CMake Error: CMake was unable to find a build program corresponding to "Unix Makefiles".  CMAKE_MAKE_PROGRAM is not set.  You probably need to select a different build tool.
+-- Configuring incomplete, errors occurred!
