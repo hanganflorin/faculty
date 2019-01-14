@@ -3,4 +3,4 @@ project(15_puzzle)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(15_puzzle main.cpp)
+add_executable(15_puzzle main.cpp Board.cpp State.cpp sequential.cpp TSPriorityQueue.cpp PriorityQueue.cpp parallel.cpp)
