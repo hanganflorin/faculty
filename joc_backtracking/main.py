@@ -1,4 +1,6 @@
 import copy
+import time
+
 
 class Game:
     def __init__(self, filename):
@@ -8,9 +10,10 @@ class Game:
         self.map = []
         self.tiles = []
         self.filename = filename
+        self.max_reached = 0
 
     def readData(self):
-        print("Reading file...")
+        print("Reading file '%s'..." % self.filename)
         tokens = []
         f = open(self.filename, 'r')
         for line in f:
@@ -108,11 +111,13 @@ class Game:
                 if tile_map[ti][tj] != 0:
                     if new_config[i+ti][j+tj] != 0:
                         return None
-                    new_config[i + ti][j + tj] = current_tile+1
+                    new_config[i + ti][j + tj] = tile_map[ti][tj]
         return new_config
 
     def backtracking(self, configuration, current_tile):
-        print(current_tile)
+        if current_tile > self.max_reached:
+            self.max_reached = current_tile
+            print(current_tile)
 
         if current_tile == self.t:
             if self.isSolution(configuration):
@@ -143,5 +148,8 @@ class Game:
 
 
 if __name__ == "__main__":
-    g = Game("input.txt")
+
+    # g = Game("input_helped_1.txt")
+    g = Game("input_helped_2.txt")
+    # g = Game("input_test.txt")
     g.run()
