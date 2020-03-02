@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Teme>
+    <Tema nr="1">
+        <descriere>Suma a+b</descriere>
+        <deadline>10</deadline>
+        <sapt_primire>10</sapt_primire>
+    </Tema>
+    <Tema nr="2">
+        <descriere>Calculati a!</descriere>
+        <deadline>10</deadline>
+        <sapt_primire>10</sapt_primire>
+    </Tema>
+    <Tema nr="3">
+        <descriere>Backtracking</descriere>
+        <deadline>12</deadline>
+        <sapt_primire>12</sapt_primire>
+    </Tema>
+    <Tema nr="8">
+        <descriere>incearca</descriere>
+        <deadline>8</deadline>
+        <sapt_primire>5</sapt_primire>
+    </Tema>
+</Teme>
